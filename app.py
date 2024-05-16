@@ -1,12 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-app=Flask (__name__)
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///contacts.db'
 db=SQLAlchemy(app)
-
-if __name__=='__main__':
-    app.run()
 
 
 # Crear modelo de la base de datos
@@ -30,6 +27,24 @@ class Contact(db.Model):
 with app.app_context():
     db.create_all()
 
-    
-    
+
+
+
+# Crear rutas
+@app.route('/contacts', methods=['GET'])
+def get_contacts():
+    contacts=Contact.query.all()
+    return jsonify({'contacts':[contact.serialize() for contact in contacts]})
+
+
+# Crear rutas
+@app.route('/contacts', methods=['POST'])
+def create_contact():
+    return 'Se creo un contacto'
+
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
