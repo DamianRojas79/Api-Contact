@@ -58,6 +58,26 @@ def get_contact(id):
 
     return jsonify(contact.serialize())
 
+# Editar Contacto
+@app.route('/contacts/<int:id>', methods=['PUT','PATCH'])
+def edit_contact(id):
+    contact=Contact.query.get_or_404(id)
+
+    data=request.get_json()
+
+    if 'name' in data:
+        contact.name=data['name']
+    if 'email' in data:
+        contact.email=data['email']
+    if 'phone' in data:
+        contact.phone=data['phone']   
+    
+    # Guardar cambios en la base
+    db.session.commit()
+    return jsonify({'message':'Contacto actualizado con exito','contact':contact.serialize()}), 201 #201 estado creado
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 
