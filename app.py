@@ -30,14 +30,14 @@ with app.app_context():
 
 
 
-# Crear rutas
+# Get contactos
 @app.route('/contacts', methods=['GET'])
 def get_contacts():
     contacts=Contact.query.all()
     return jsonify({'contacts':[contact.serialize() for contact in contacts]})
 
 
-# Crear rutas
+# Crear Contacto
 @app.route('/contacts', methods=['POST'])
 def create_contact():
     #obtener los datos del json
@@ -49,7 +49,7 @@ def create_contact():
     return jsonify({'message':'Contacto creado con exito','contact':contact.serialize()}), 201 #201 estado creado
 
 
-# Get Contacto
+# Get Contacto por ID
 @app.route('/contacts/<int:id>', methods=['GET'])
 def get_contact(id):
     contact=Contact.query.get(id)
@@ -76,6 +76,18 @@ def edit_contact(id):
     db.session.commit()
     return jsonify({'message':'Contacto actualizado con exito','contact':contact.serialize()}), 201 #201 estado creado
 
+
+# Eliminar Contacto
+@app.route('/contacts/<int:id>', methods=['DELETE'])
+def delete_contact(id):
+    contact=Contact.query.get(id)
+    if not contact:
+        return jsonify({'message':'El contacto no se encuentra'}), 404
+
+    db.session.delete(contact)
+    db.session.commit()
+
+    return jsonify({'message':'Contacto eliminado con exito'})
 
 
 if __name__ == '__main__':
